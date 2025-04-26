@@ -2,28 +2,45 @@ name: CD Pipeline
 
 on:
   push:
-    branches:
-      - main
+    branches: [ "main" ]
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    name: Deploy to K8s Cluster
+    runs-on: self-hosted
 
     steps:
-    - name: Checkout código
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Configurar kubectl
-      uses: azure/setup-kubectl@v3
-      with:
-        version: 'latest'
+      - name: Set up kubeconfig
+        shell: powershell
+        run: Set-Content -Path kubeconfig -Value $env:KUBECONFIG_CONTENT -Encoding Ascii
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
+          KUBECONFIG: kubeconfig
 
-    - name: Criar kubeconfig
-      run: |
-        echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
-        export KUBECONFIG=$(pwd)/kubeconfig
+      - name: Create and apply Postgres Secret
+        shell: powershell
+        run: |
+          Set-Content -Path kubeconfig -Value $env:KUBECONFIG_CONTENT -Encoding Ascii
+          kubectl create secret generic postgres-secret `
+            --from-literal=username=${{ secrets.POSTGRES_USERNAME }} `
+            --from-literal=password=${{ secrets.POSTGRES_PASSWORD }} `
+            --dry-run=client -o yaml --validate=false `
+            | kubectl apply -f - --validate=false
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG_CONTENT }}
+          KUBECONFIG: kubeconfig
 
-    - name: Atualizar deployment
-      run: |
-        kubectl set image deployment/sale-service sale-service=${{ secrets.DOCKER_USERNAME }}/sale-service:${{ github.sha }} -n seu-namespace
-        kubectl rollout status deployment/sale-service -n seu-namespace
+      - name: Deploy Postgres manifests
+        shell: powershell
+        run: kubectl apply -f k8s/postgres/ --validate=false
+        env:
+          KUBECONFIG: kubeconfig
+
+      - name: Deploy Sale Service manifests
+        shell: powershell
+        run: kubectl apply -f k8s/sale/ --validate=false
+        env:
+          KUBECONFIG: kubeconfig
