@@ -20,6 +20,9 @@ jobs:
         distribution: 'temurin'
         java-version: '21'
 
+    - name: Dar permissão para o gradlew
+      run: chmod +x gradlew
+
     - name: Build e Testes
       run: ./gradlew build
 
