@@ -1,0 +1,29 @@
+name: CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout código
+      uses: actions/checkout@v3
+
+    - name: Configurar kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'latest'
+
+    - name: Criar kubeconfig
+      run: |
+        echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
+        export KUBECONFIG=$(pwd)/kubeconfig
+
+    - name: Atualizar deployment
+      run: |
+        kubectl set image deployment/sale-service sale-service=${{ secrets.DOCKER_USERNAME }}/sale-service:${{ github.sha }} -n seu-namespace
+        kubectl rollout status deployment/sale-service -n seu-namespace
