@@ -17,6 +17,7 @@ spec:
       containers:
         - name: sale-service
           image: ${{ secrets.DOCKER_USERNAME }}/sale-service:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           env:
@@ -32,3 +33,4 @@ spec:
                 secretKeyRef:
                   name: postgres-secret
                   key: password
+
