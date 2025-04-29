@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: postgres
+  name: postgres-sale
   labels:
-    app: postgres
+    app: postgres-sale
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: postgres-sale
   template:
     metadata:
       labels:
-        app: postgres
+        app: postgres-sale
     spec:
       containers:
-        - name: postgres
+        - name: postgres-sale
           image: postgres:14
           ports:
             - containerPort: 5432
