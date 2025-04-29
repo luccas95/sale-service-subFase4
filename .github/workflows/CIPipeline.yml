@@ -29,7 +29,6 @@ jobs:
     - name: Build da imagem Docker
       run: |
         docker build -t sale-service:${{ github.sha }} .
-        docker tag sale-service:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/sale-service:${{ github.sha }}
         docker tag sale-service:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/sale-service:latest
 
     - name: Login no DockerHub
@@ -40,5 +39,4 @@ jobs:
 
     - name: Push da imagem
       run: |
-        docker push ${{ secrets.DOCKER_USERNAME }}/sale-service:${{ github.sha }}
         docker push ${{ secrets.DOCKER_USERNAME }}/sale-service:latest
