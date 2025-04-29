@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: sale-service
-          image: ${{ secrets.DOCKER_USERNAME }}/sale-service:${{ github.sha }}
+          image: ${{ secrets.DOCKER_USERNAME }}/sale-service:latest
           ports:
             - containerPort: 8080
           env:
