@@ -21,7 +21,7 @@ public class    VehicleClient {
 
     public VehicleResponse getVehicleById(Long vehicleId) {
         try {
-            String url = vehicleServiceUrl + "/vehicles/" + vehicleId;
+            String url = vehicleServiceUrl + "/veiculos/buscarVeiculoPorID/" + vehicleId;
             return restTemplate.getForObject(url, VehicleResponse.class);
         } catch (HttpClientErrorException.NotFound e) {
             throw new NotFoundException("Veículo não encontrado no serviço de veículos");
@@ -29,7 +29,7 @@ public class    VehicleClient {
     }
 
     public void markVehicleAsSold(Long vehicleId) {
-        String url = vehicleServiceUrl + "/vehicles/" + vehicleId + "/sell";
+        String url = vehicleServiceUrl + "/veiculos/ajustarStatusVeiculoVendido/" + vehicleId;
 //        restTemplate.patchForObject(url, null, Void.class);
         restTemplate.put(url, null);
     }
