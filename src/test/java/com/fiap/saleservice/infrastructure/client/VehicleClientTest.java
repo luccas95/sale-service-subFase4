@@ -29,7 +29,7 @@ public class VehicleClientTest {
         mockResponse.setId(1L);
         mockResponse.setMarca("Fiat");
 
-        when(restTemplate.getForObject("http://localhost:8080/vehicles/1", VehicleResponse.class))
+        when(restTemplate.getForObject("http://localhost:8080/veiculos/buscarVeiculoPorID/1", VehicleResponse.class))
                 .thenReturn(mockResponse);
 
         VehicleResponse response = vehicleClient.getVehicleById(1L);
@@ -41,7 +41,7 @@ public class VehicleClientTest {
 
     @Test
     void shouldThrowNotFoundExceptionWhenVehicleIsNotFound() {
-        when(restTemplate.getForObject("http://localhost:8080/vehicles/999", VehicleResponse.class))
+        when(restTemplate.getForObject("http://localhost:8080/veiculos/buscarVeiculoPorID/999", VehicleResponse.class))
                 .thenThrow(HttpClientErrorException.NotFound.class);
 
         assertThrows(NotFoundException.class, () -> vehicleClient.getVehicleById(999L));
@@ -51,6 +51,6 @@ public class VehicleClientTest {
     void shouldCallPutToMarkVehicleAsSold() {
         vehicleClient.markVehicleAsSold(5L);
 
-        verify(restTemplate).put("http://localhost:8080/vehicles/5/sell", null);
+        verify(restTemplate).put("http://localhost:8080/veiculos/ajustarStatusVeiculoVendido/5", null);
     }
 }
