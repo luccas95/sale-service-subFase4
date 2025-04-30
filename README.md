@@ -94,6 +94,15 @@ A aplicação irá subir na porta **8082**.
 
 Já existe um arquivo base para deploy no Kubernetes.
 
+## 🧪 Testes
+
+Para rodar os testes automatizados (se incluídos):
+
+```bash
+./gradlew test
+```
+![Cobertura de Testes](/images/Cobertura%20de%20Testes%20-%20sale-service.png)
+
 ## Observações
 
 - O serviço se comunica com o `vehicle-service` e `payment-service`, certifique-se que ambos estejam ativos.
