@@ -17,10 +17,10 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 vehicle-service:
-  url: http://localhost:8081
+  url: http://vehicle-service:8081
 client:
   payment:
-    url: http://localhost:8083
+    url: http://payment-service:8083
 
 logging:
   level:
