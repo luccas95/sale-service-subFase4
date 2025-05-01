@@ -175,7 +175,7 @@ Para rodar os testes automatizados :
 ```bash
 ./gradlew test
 ```
-![Cobertura de Testes](/images/Cobertura%20de%20Testes%20-%20sale-service.png)
+![Cobertura de Testes](images/Cobertura%20de%20Testes%20-%20sale-service.png)
 
 ## Observações
 
