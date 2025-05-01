@@ -4,5 +4,5 @@ metadata:
   name: sale-config
 data:
   VEHICLE_SERVICE_URL: 'http://sale-service:8082'
-  SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres-payment:5432/payment_db'
+  SPRING_DATASOURCE_URL: 'jdbc:postgresql://postgres-service:5432/salesdb'
   PAYMENT_SERVICE_URL: 'http://payment-service:8083'
