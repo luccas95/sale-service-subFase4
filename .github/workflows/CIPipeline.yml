@@ -30,7 +30,7 @@ jobs:
     - name: Upload do relatório JaCoCo
       uses: actions/upload-artifact@v4
       with:
-        name: jacoco-report
+        name: jacoco-report-sale-service
         path: build/jacocoHtml
 
     - name: Build da imagem Docker
