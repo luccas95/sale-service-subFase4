@@ -23,8 +23,14 @@ jobs:
     - name: Dar permissão para o gradlew
       run: chmod +x gradlew
 
-    - name: Build e Testes
-      run: ./gradlew build
+    - name: Build, Testes e Relatório de Cobertura
+      run: ./gradlew clean test jacocoTestReport
+
+    - name: Upload do relatório JaCoCo
+      uses: actions/upload-artifact@v4
+      with:
+        name: jacoco-report
+        path: build/reports/jacoco/test/html
 
     - name: Build da imagem Docker
       run: |
