@@ -1,3 +1,54 @@
+# Visão Geral do Projeto
+
+
+*Sistema de revenda digital com gestão de veículos, vendas e integração com pagamentos*
+
+Este projeto foi desenvolvido como parte do **Tech Challenge - Pós-Tech SOAT (Fase 2)**. Ele simula a transformação digital de uma empresa de revenda de veículos, oferecendo uma API robusta para gestão de produtos e vendas, além de integração com um serviço de pagamentos.
+
+## 🎯 Visão de Negócio
+
+A plataforma online permite:
+
+- ✅ **Cadastrar veículos para venda** (marca, modelo, ano, cor, preço)
+- ✏️ **Editar informações** dos veículos
+- 💰 **Efetuar a venda** de veículos, vinculando comprador e data
+- 📃 **Listar veículos disponíveis e vendidos**, ordenados por preço
+- 🔄 **Receber notificações de pagamento via webhook** com status (efetuado/cancelado)
+
+> **Objetivo**: tornar o processo de revenda mais transparente, rastreável e eficiente.
+
+---
+
+## 🧱 Visão Técnica
+
+*Separação de responsabilidades usando Clean Architecture*
+
+O projeto segue os princípios de:
+- **Clean Architecture**
+- **SOLID**
+- **Desenvolvimento orientado a microsserviços**
+
+A infraestrutura foi desenhada para execução em ambientes **Docker** e **Kubernetes**.
+
+### Inclui:
+- `Dockerfile` para cada serviço
+- `docker-compose.yml` para ambiente local
+- Manifestos Kubernetes: `Deployment`, `Service`, `ConfigMap`, `Secret`
+- Documentação de API via **Swagger/OpenAPI**
+
+---
+
+## 📦 Estrutura dos Microsserviços
+
+*Serviços independentes com integração via REST*
+
+- `vehicle-service`: Cadastro e listagem de veículos
+- `sale-service`: Venda e status da transação
+- `payment-service`: Recebimento de confirmação de pagamento e atualização da venda
+
+
+
+
 
 # Sale Service 🚗💰
 
@@ -17,7 +68,7 @@ Ele permite criar vendas, consultar e atualizar o status das vendas, integrando-
 
 ## Tecnologias
 
-- Java 17
+- Java 21
 - Spring Boot 3.x
 - Gradle
 - PostgreSQL (banco de dados)
@@ -49,34 +100,60 @@ src
     └── java
 ```
 
-## Como executar localmente 🚀
+## 🚀 Como executar localmente (Docker Compose)
 
-### Pré-requisitos
-
-- Java 17+
-- Docker
-- PostgreSQL rodando (ou utilize o `docker-compose` abaixo)
-
-### Banco de dados
-
-Sugerido para o Sale Service:
-- Banco: `sales_db`
-- Usuário: `postgres`
-- Senha: `postgres`
-
-Você pode subir usando Docker:
-
-```bash
-docker run --name sales-db -e POSTGRES_DB=sales_db -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5433:5432 -d postgres
-```
-
-> ⚠️ Atenção: usamos a porta `5433` para evitar conflito com outros serviços.
-
-### Build e run local
+1. Gere o build da aplicação:
 
 ```bash
 ./gradlew clean build
-./gradlew bootRun
+```
+
+2. Criar a network para que as aplicações se comuniquem entre os containers:
+
+
+```bash
+docker network create microservices-network
+```
+
+3. Suba os containers com Docker Compose:
+
+```bash
+docker-compose up --build
+```
+
+4. Acesse o Swagger:
+
+```
+http://localhost:8082/swagger-ui/index.html
+```
+
+## ☸️ Como executar no Kubernetes (Docker Desktop)
+
+1. Certifique-se que o Kubernetes está habilitado no Docker Desktop.
+
+2. Construa a imagem da aplicação:
+
+```bash
+docker build -t sale-service:latest .
+```
+
+3. Aplique os manifests do Kubernetes:
+
+```bash
+kubectl apply -f .\k8s\postgres\
+kubectl apply -f .\k8s\sale\local\
+```
+
+4. Verifique os serviços e pegue a porta NodePort:
+
+```bash
+kubectl get svc
+```
+
+Acesse no navegador usando a porta exibida:
+
+```
+http://localhost:<NODE_PORT>/swagger-ui/index.html
 ```
 
 A aplicação irá subir na porta **8082**.
@@ -90,13 +167,10 @@ A aplicação irá subir na porta **8082**.
 | PUT    | `/sales/{id}/concluir`         | Conclui uma venda                 |
 | PUT    | `/sales/{id}/cancelar`         | Cancela uma venda                 |
 
-## Kubernetes 📦
-
-Já existe um arquivo base para deploy no Kubernetes.
 
 ## 🧪 Testes
 
-Para rodar os testes automatizados (se incluídos):
+Para rodar os testes automatizados :
 
 ```bash
 ./gradlew test
@@ -106,7 +180,7 @@ Para rodar os testes automatizados (se incluídos):
 ## Observações
 
 - O serviço se comunica com o `vehicle-service` e `payment-service`, certifique-se que ambos estejam ativos.
-- O `payment-service` automaticamente cria o pagamento quando a venda é criada.
+- O `payment-service` automaticamente cria o pedido de pagamento quando a venda é criada.
 
 ---
 
