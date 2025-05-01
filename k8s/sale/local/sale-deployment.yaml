@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sale-service
+  labels:
+    app: sale-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sale-service
+  template:
+    metadata:
+      labels:
+        app: sale-service
+    spec:
+      containers:
+        - name: sale-service
+          image: sale-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: VEHICLE_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: sale-config
+                  key: VEHICLE_SERVICE_URL
+            - name: PAYMENT_SERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: sale-config
+                  key: PAYMENT_SERVICE_URL
+
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: sale-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+

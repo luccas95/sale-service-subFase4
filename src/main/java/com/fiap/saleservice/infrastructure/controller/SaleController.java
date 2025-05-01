@@ -78,7 +78,7 @@ public class SaleController {
                 sale.getBuyer(),
                 sale.getSaleDate(),
                 sale.getStatus(),
-                null // No list, ainda não vamos trazer o paymentId (opcional)
+                sale.getPaymentId() // No list, ainda não vamos trazer o paymentId (opcional)
         );
     }
 

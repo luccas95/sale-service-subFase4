@@ -15,6 +15,7 @@ public class Sale {
     private Double saleValue;
     private String buyer;
     private LocalDateTime saleDate;
+    private Long paymentId;
 
     public SaleStatus getStatus() {
         return status;
@@ -35,6 +36,14 @@ public class Sale {
         this.buyer = buyer;
         this.saleDate = saleDate;
         this.status = SaleStatus.AGUARDANDO_PAGAMENTO;
+    }
+    public Sale(Long vehicleId, Double saleValue, String buyer, LocalDateTime saleDate, Long paymentId) {
+        this.vehicleId = vehicleId;
+        this.saleValue = saleValue;
+        this.buyer = buyer;
+        this.saleDate = saleDate;
+        this.status = SaleStatus.AGUARDANDO_PAGAMENTO;
+        this.paymentId = paymentId;
     }
 
     public Long getId() {
@@ -71,5 +80,13 @@ public class Sale {
 
     public void setSaleDate(LocalDateTime saleDate) {
         this.saleDate = saleDate;
+    }
+
+    public Long getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(Long paymentId) {
+        this.paymentId = paymentId;
     }
 }

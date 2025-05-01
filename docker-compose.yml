@@ -1,22 +1,33 @@
 version: '3.8'
+
 services:
   sale-db:
     image: postgres
     container_name: sale-db
     environment:
-      POSTGRES_DB: sales_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5433:5432"
+    networks:
+      - microservices-network
 
   sale-service:
     build: .
     ports:
       - "8082:8082"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://sale-db:5432/sales_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - VEHICLE_SERVICE_URL=${VEHICLE_SERVICE_URL}
+      - PAYMENT_SERVICE_URL=${PAYMENT_SERVICE_URL}
     depends_on:
       - sale-db
+    networks:
+      - microservices-network
+
+networks:
+  microservices-network:
+    external: true

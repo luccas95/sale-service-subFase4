@@ -38,7 +38,7 @@ public class CreateSaleUseCase {
             throw new BusinessException("Veículo não está disponível para venda");
         }
 
-        Sale sale = new Sale(vehicleId, vehicle.getPreco(), buyer, LocalDateTime.now());
+        Sale sale = new Sale(vehicleId, vehicle.getPreco(), buyer, LocalDateTime.now(), null);
         sale.setStatus(SaleStatus.PENDENTE);
 
         // Salva primeiro para gerar o ID
@@ -47,7 +47,10 @@ public class CreateSaleUseCase {
         try {
             // Depois de salvo e com ID, chama o serviço de pagamento
             PaymentResponse paymentResponse = paymentClient.createPayment(new PaymentRequest(savedSale.getId(), savedSale.getSaleValue()));
+            savedSale.setPaymentId(paymentResponse.getId());
+            Sale updatedSale = gateway.save(savedSale);
             return new CreateSaleResponse(savedSale, paymentResponse.getId());
+
         } catch (Exception ex) {
             // Se der erro no pagamento, remove a venda criada.
             gateway.delete(savedSale.getId());
